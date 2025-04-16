@@ -181,6 +181,17 @@ def update_Student():
     except:
         return jsonify({"error": "An exception occurred in update_Student route"}), 500
 
+@app.route('/Testing', methods=['POST'])
+def Testing():
+    try:
+        data = request.json
+        if data:
+            return jsonify({"Status": "Data Received!"}, {"Message": data}), 201
+        else:
+            return jsonify({"error": "No data found!"}), 400
+    except:
+        return jsonify({"error": "An exception occurred in Testing route"}), 500
+    
 if __name__=='__main__':
     app.run()
     # app.run(debug=True, host='0.0.0.0')

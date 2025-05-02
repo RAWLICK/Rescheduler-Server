@@ -3,13 +3,23 @@ from CompressSchedule import CompressionFunction
 # from Rough import CompressionFunction
 from flask_cors import CORS
 from pymongo import MongoClient
+import os
+from twilio.rest import Client
+from dotenv import load_dotenv
 
 # First run the server before sending request to backend so that a local network could get created.
 
 # Cross-Origin Resource Sharing (CORS) can be an issue when a client on a different domain or port (your React Native app) tries to access the backend. You might need to install and configure flask-cors in your Flask app to allow requests from your React Native client.
 
+load_dotenv()  # loads the .env file
+
 app = Flask(__name__)
 CORS(app)
+
+# Twilio Configuration
+account_sid = os.getenv["TWILIO_ACCOUNT_SID"]
+auth_token = os.getenv["TWILIO_AUTH_TOKEN"]
+TwilioClient = Client(account_sid, auth_token) 
 
 # MongoDB configuration
 client = MongoClient("mongodb+srv://archit_gupta_0019:My_Lord%3B7@rescheduler.kmyql.mongodb.net/")
@@ -202,6 +212,22 @@ def Testing():
     except:
         return jsonify({"error": "An exception occurred in Testing route"}), 500
     
+@app.route('/SendingWhatsAppMessage', methods=['POST'])
+def SendingWhatsAppMessage():
+    try:
+        data = request.json
+        if data:
+            message = client.messages.create (
+                from_="whatsapp:+918052860019",
+                body="Hello, there!",
+                to=f"whatsapp:+91{data}",
+            )
+            return jsonify({"message": "WhatsApp Message sent successfully!"}), 201
+        else:
+            return jsonify({"error": "No data found!"}), 400
+    except:
+        return jsonify({"error": "An exception occurred in SendingWhatsAppMessage route"}), 500
+        
 if __name__=='__main__':
     app.run()
     # app.run(debug=True, host='0.0.0.0')

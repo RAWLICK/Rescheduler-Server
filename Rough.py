@@ -9,134 +9,134 @@ from flask import jsonify
 import json
 
 def CompressionFunction(
-        # ImportedDataFrame, 
+        ImportedDataFrame, 
         currentTime, 
         PriorSelections, 
         FixedSelections,
         RemovingSelections):
 
-    ImportedDataFrame = json.dumps([
-        {
-            # 0
-            "StartTime": "06:00",
-            "EndTime": "07:00",
-            "Work": "Physics",
-            "StartAngle": 180,
-            "EndAngle": 210,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "Green"
-        },
-        {
-            # 1
-            "StartTime": "07:00",
-            "EndTime": "08:00",
-            "Work": "Chemistry",
-            "StartAngle": 210,
-            "EndAngle": 240,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-        {
-            # 2
-            "StartTime": "08:00",
-            "EndTime": "09:00",
-            "Work": "Maths",
-            "StartAngle": 240,
-            "EndAngle": 270,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-        {
-            # 3
-            "StartTime": "09:00",
-            "EndTime": "10:00",
-            "Work": "Biology",
-            "StartAngle": 270,
-            "EndAngle": 300,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-        {
-            # 4
-            "StartTime": "10:00",
-            "EndTime": "11:00",
-            "Work": "SST",
-            "StartAngle": 300,
-            "EndAngle": 330,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-        {
-            # 5
-            "StartTime": "11:00",
-            "EndTime": "12:30",
-            "Work": "Economics",
-            "StartAngle": 330,
-            "EndAngle": 375,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-        {
-            # 6
-            "StartTime": "12:30",
-            "EndTime": "13:30",
-            "Work": "Sanskrit",
-            "StartAngle": 375,
-            "EndAngle": 405,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-        {
-            # 7
-            "StartTime": "13:30",
-            "EndTime": "14:30",
-            "Work": "Business",
-            "StartAngle": 405,
-            "EndAngle": 435,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-        {
-            # 8
-            "StartTime": "14:30",
-            "EndTime": "15:30",
-            "Work": "Art",
-            "StartAngle": 435,
-            "EndAngle": 465,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-        {
-            # 9
-            "StartTime": "15:30",
-            "EndTime": "16:30",
-            "Work": "Sports",
-            "StartAngle": 465,
-            "EndAngle": 495,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-        {
-            # 10
-            "StartTime": "16:30",
-            "EndTime": "17:30",
-            "Work": "Cooking",
-            "StartAngle": 495,
-            "EndAngle": 525,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-        {
-            # 11
-            "StartTime": "17:30",
-            "EndTime": "18:30",
-            "Work": "Hindi",
-            "StartAngle": 525,
-            "EndAngle": 555,
-            "TaskDate": "05/01/2025",
-            "Slice_Color": "blue"
-        },
-    ])
+    # ImportedDataFrame = json.dumps([
+    #     {
+    #         # 0
+    #         "StartTime": "06:00",
+    #         "EndTime": "07:00",
+    #         "Work": "Physics",
+    #         "StartAngle": 180,
+    #         "EndAngle": 210,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "Green"
+    #     },
+    #     {
+    #         # 1
+    #         "StartTime": "07:00",
+    #         "EndTime": "08:00",
+    #         "Work": "Chemistry",
+    #         "StartAngle": 210,
+    #         "EndAngle": 240,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    #     {
+    #         # 2
+    #         "StartTime": "08:00",
+    #         "EndTime": "09:00",
+    #         "Work": "Maths",
+    #         "StartAngle": 240,
+    #         "EndAngle": 270,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    #     {
+    #         # 3
+    #         "StartTime": "09:00",
+    #         "EndTime": "10:00",
+    #         "Work": "Biology",
+    #         "StartAngle": 270,
+    #         "EndAngle": 300,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    #     {
+    #         # 4
+    #         "StartTime": "10:00",
+    #         "EndTime": "11:00",
+    #         "Work": "SST",
+    #         "StartAngle": 300,
+    #         "EndAngle": 330,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    #     {
+    #         # 5
+    #         "StartTime": "11:00",
+    #         "EndTime": "12:30",
+    #         "Work": "Economics",
+    #         "StartAngle": 330,
+    #         "EndAngle": 375,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    #     {
+    #         # 6
+    #         "StartTime": "12:30",
+    #         "EndTime": "13:30",
+    #         "Work": "Sanskrit",
+    #         "StartAngle": 375,
+    #         "EndAngle": 405,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    #     {
+    #         # 7
+    #         "StartTime": "13:30",
+    #         "EndTime": "14:30",
+    #         "Work": "Business",
+    #         "StartAngle": 405,
+    #         "EndAngle": 435,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    #     {
+    #         # 8
+    #         "StartTime": "14:30",
+    #         "EndTime": "15:30",
+    #         "Work": "Art",
+    #         "StartAngle": 435,
+    #         "EndAngle": 465,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    #     {
+    #         # 9
+    #         "StartTime": "15:30",
+    #         "EndTime": "16:30",
+    #         "Work": "Sports",
+    #         "StartAngle": 465,
+    #         "EndAngle": 495,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    #     {
+    #         # 10
+    #         "StartTime": "16:30",
+    #         "EndTime": "17:30",
+    #         "Work": "Cooking",
+    #         "StartAngle": 495,
+    #         "EndAngle": 525,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    #     {
+    #         # 11
+    #         "StartTime": "17:30",
+    #         "EndTime": "18:30",
+    #         "Work": "Hindi",
+    #         "StartAngle": 525,
+    #         "EndAngle": 555,
+    #         "TaskDate": "05/01/2025",
+    #         "Slice_Color": "blue"
+    #     },
+    # ])
 
     # Converting ImportedDataframe into a dataframe which this Compress Function can consume accordingly
     # Remember to use single quote (') and double quotes(") seperately in fString instead of same to avoid any error.

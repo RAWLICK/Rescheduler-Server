@@ -5,13 +5,13 @@ from flask_cors import CORS
 from pymongo import MongoClient
 import os
 # from twilio.rest import Client
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 # First run the server before sending request to backend so that a local network could get created.
 
 # Cross-Origin Resource Sharing (CORS) can be an issue when a client on a different domain or port (your React Native app) tries to access the backend. You might need to install and configure flask-cors in your Flask app to allow requests from your React Native client.
 
-load_dotenv()  # loads the .env file
+# load_dotenv()  # loads the .env file
 
 app = Flask(__name__)
 CORS(app)

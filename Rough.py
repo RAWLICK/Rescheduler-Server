@@ -440,7 +440,7 @@ def CompressionFunction(
         elif (RemovingSelections == ""):
             Fragment_Dur_Dict.update({"Fragment_Last_Duration" : End[-1] - Pinned_Work_EndTiming[-1]})
 
-        print("Fragment_Dur_Dict: ",Fragment_Dur_Dict)
+        print("Fragment_Dur_Dict: ", Fragment_Dur_Dict)
         print("\n")
         # Output: {'Fragment_1_Duration': Timedelta('0 days 03:00:00'), 'Fragment_2_Duration': Timedelta('0 days 03:00:00'), 'Fragment_3_Duration': Timedelta('0 days 04:00:00'), 'Fragment_4_Duration': Timedelta('0 days 01:30:00')}
 
@@ -548,6 +548,7 @@ def CompressionFunction(
         New_Data_Created = 0
 
         # Updated_Complete_Fragments is an updated list of Complete_Fragments list covering the changes made in the DataFrame including Pinned_Timings, new Timings and New_Data_Created which is also applicable for Updated_Dur_Acc_Rat and Updated_TimeDel_Min
+
         Updated_Complete_Fragments = Complete_Fragments[:]
         Updated_Dur_Acc_Rat = Duration_According_Ratio[:]
 
@@ -608,11 +609,18 @@ def CompressionFunction(
             #Sorting the rows on the basis of 'Start_' column with respect to time and resetting the index of dataframe.
             Compressed_DataFrame = Compressed_DataFrame.sort_values(by='Start_').reset_index(drop=True)
 
+            # This function make the range of the loop according to the result of, if the Last Work has been pinned or not
+            def LoopRangeDecide():
+                if(FixedSelections != "" and len(dataframe) - 1 not in Pinned_Work_List):
+                    return LenTills_Dictionary[key1] - 1
+                else:
+                    return LenTills_Dictionary[key1]
+
             # Rearranging the dataframe to make the timings continous in nature rather than broken apart.
             # We have used j for loop so to add those Pinned Time Diff without disturbing the break used in i's for loop.
+            # We have used j for loop also because there will be 2 moments of overlapping, one is when the upper work overlapping the pinned work below it and second is when the pinned overlapping the work below it.
 
-            for i in range(0, LenTills_Dictionary[key1] + Pinned_Timing_Reached + New_Data_Created): 
-                print("Error understanding: ", LenTills_Dictionary[key1] + Pinned_Timing_Reached + New_Data_Created)
+            for i in range(0, len(Compressed_DataFrame) - 1): 
                 if(Compressed_DataFrame.End_[i] > Compressed_DataFrame.Start_[i+1]):
                     Pinned_Time_Diff = Compressed_DataFrame.End_[i+1] - Compressed_DataFrame.Start_[i+1]
                     Intersec_Diff = Compressed_DataFrame.End_[i] - Compressed_DataFrame.Start_[i+1]
@@ -674,8 +682,13 @@ def CompressionFunction(
                 print("Structured Code: ", "(", LenKey, ")")
                 print(Compressed_DataFrame)
                 print("\n")
-                # print("len(Updated_Complete_Fragments) != len(Complete_Fragments)")
-                Pinned_Timing_Reached += 1
+                print("len(Updated_Complete_Fragments) != len(Complete_Fragments)")
+
+                if(FixedSelections != "" and len(dataframe) - 1 not in Pinned_Work_List and (LenKey == len(Updated_LenTills_Dictionary) - 1)):
+                    Pinned_Timing_Reached += 0
+                else:
+                    Pinned_Timing_Reached += 1
+
                 Updated_LenTills_Dictionary[key2] = LenTills_Dictionary[key1] + Pinned_Timing_Reached + New_Data_Created
 
                 updateLenTillsList(Updated_LenTills_Dictionary, Updated_LenTills_List)
@@ -698,6 +711,7 @@ def CompressionFunction(
                 print('\n')
 
                 for i in range(Updated_LenTills_List[LenKey-1], Updated_LenTills_List[LenKey]):
+                    # print("Compressed_DataFrame.End: ", Compressed_DataFrame.End_)
                     newDuration.append(int((Compressed_DataFrame.End_[i] - Compressed_DataFrame.Start_[i]).total_seconds()/60))
                 Updated_Dur_Acc_Rat[Updated_LenTills_List[LenKey-1]: Updated_LenTills_List[LenKey-1] + LenBtwPins_Dictionary[btwKey]] = newDuration[Updated_LenTills_List[LenKey-1]: Updated_LenTills_List[LenKey]]
                 print("Updated_Dur_Acc_Rat: ", Updated_Dur_Acc_Rat)

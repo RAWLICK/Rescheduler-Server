@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from CompressSchedule import CompressionFunction
+from Rough import CompressionFunction
 # from Rough import CompressionFunction
 from flask_cors import CORS
 from pymongo import MongoClient

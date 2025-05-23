@@ -299,7 +299,10 @@ def CompressionFunction(
 
     if (FixedSelections == ""):
         Total_Fragment_Duration = timedelta(0)
-        Total_Fragment_Duration = Original_End[-1] - cur_time
+        if(RemovingSelections != ""):
+            Total_Fragment_Duration = Original_End[-1] - cur_time
+        elif (RemovingSelections == ""):
+            Total_Fragment_Duration = End[-1] - cur_time
         print("Total_Fragment_Duration(Total Time Left): ", Total_Fragment_Duration)
         print("\n")
         # Output: 0 days 11:30:00

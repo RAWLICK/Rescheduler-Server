@@ -212,6 +212,31 @@ def Testing():
     except:
         return jsonify({"error": "An exception occurred in Testing route"}), 500
     
+@app.route('/GetVersionInfo', methods=['GET'])
+def get_version_info():
+    try:
+        VersionInfo = [
+            {
+                "Platform": "android",
+                "Versions": {
+                    "LatestVersion": "1.2",
+                    "MinSupportedVersion": "1.2",
+                    "UpdateRequired": "true"
+                }
+            },
+            {
+                "Platform": "ios",
+                "Versions": {
+                    "LatestVersion": "1.0",
+                    "MinSupportedVersion": "1.0",
+                    "UpdateRequired": "true"
+                }
+            }
+        ]
+        return jsonify(VersionInfo)
+    except:
+        return jsonify({"error": "An exception occurred in GetVersionInfo route"}), 500
+    
 # @app.route('/SendingWhatsAppMessage', methods=['POST'])
 # def SendingWhatsAppMessage():
 #     try:

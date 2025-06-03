@@ -201,6 +201,28 @@ def update_Student():
     except:
         return jsonify({"error": "An exception occurred in update_Student route"}), 500
 
+@app.route('/UpdateScheduleArray', methods=['POST'])
+def update_ScheduleArray():
+    try:
+        data = request.json
+        if data:
+            if data["Process"] == "Add":
+                StudentsSchedules.update_one(
+                    { "uniqueID": data["uniqueID"] },
+                    { "$push": { "ScheduleArray": data["SubjectInfoObject"] } }
+                )
+                return jsonify({"Message": "SubjectInfoObject Added!"}), 201
+            elif data["Process"] == "Delete":
+                StudentsSchedules.update_one(
+                    { "uniqueID": data["uniqueID"] },
+                    { "$pull": { "ScheduleArray": {"uniqueID": data["SubjectUniqueID"]} } }
+                )
+                return jsonify({"Message": "SubjectInfoObject Deleted!"}), 201
+        else:
+            return jsonify({"error": "No data found!"}), 400
+    except:
+        return jsonify({"error": "An exception occurred in update_ScheduleArray route"}), 500
+
 @app.route('/Testing', methods=['POST'])
 def Testing():
     try:

@@ -223,6 +223,42 @@ def update_ScheduleArray():
     except:
         return jsonify({"error": "An exception occurred in update_ScheduleArray route"}), 500
 
+@app.route('/UpdateExistingSubjectsArray', methods=['POST'])
+def update_ExistingSubjectsArray():
+    try:
+        data = request.json
+        if data:
+            if data["Process"] == "Add":
+                SchedulesCompletion.update_one(
+                    { "uniqueID": data["uniqueID"] },
+                    { "$push": { "Completion": data["StatsSubjectInfoObject"] } }
+                )
+                return jsonify({"Message": "StatsSubjectInfoObject Added!"}), 201
+            elif data["Process"] == "Delete":
+                SchedulesCompletion.update_one(
+                    { "uniqueID": data["uniqueID"] },
+                    { "$pull": { "Completion": {"uniqueID": data["StatsSubjectUniqueID"]} } }
+                )
+                return jsonify({"Message": "StatsSubjectInfoObject Deleted!"}), 201
+            elif data["Process"] == "AddCompletion":
+                for i in data["PercentageArray"]:
+                    SchedulesCompletion.update_one(
+                        {"uniqueID": data["uniqueID"]},
+                        {"$push": 
+                            {
+                                "Completion.$[comp].Dataframe": i["ProgressInfo"]
+                            }
+                        },
+                        array_filters=[{
+                            "comp.uniqueID": i["SubjectUniqueID"]
+                        }]
+                    )
+                return jsonify({"Message": "ProgressInfo Added!"}), 201
+        else:
+            return jsonify({"error": "No data found!"}), 400
+    except:
+        return jsonify({"error": "An exception occurred in update_ExistingSubjectsArray route"}), 500
+
 @app.route('/Testing', methods=['POST'])
 def Testing():
     try:

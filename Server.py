@@ -240,6 +240,18 @@ def update_ExistingSubjectsArray():
                     { "$pull": { "Completion": {"uniqueID": data["StatsSubjectUniqueID"]} } }
                 )
                 return jsonify({"Message": "StatsSubjectInfoObject Deleted!"}), 201
+            elif data["Process"] == "UpdateSubject":
+                SchedulesCompletion.update_one(
+                    { "uniqueID": data["uniqueID"] },
+                    { "$set": {
+                        "Completion.$[comp].Subject": data["NewExistingSubject"]["Subject"],
+                        "Completion.$[comp].Current_Duration": data["NewExistingSubject"]["Current_Duration"]
+                    }},
+                    array_filters=[{
+                        "comp.uniqueID": data["NewExistingSubject"]["uniqueID"]
+                    }]
+                )
+                return jsonify({"Message": "StatsSubjectInfoObject Updated!"}), 201
             elif data["Process"] == "AddCompletion":
                 for i in data["PercentageArray"]:
                     SchedulesCompletion.update_one(
@@ -252,6 +264,12 @@ def update_ExistingSubjectsArray():
                         array_filters=[{
                             "comp.uniqueID": i["SubjectUniqueID"]
                         }]
+                    )
+                StudentInfo.update_one(
+                        {"uniqueID": data["uniqueID"]},
+                        {"$set": {
+                            "Streak": data["Streak"],
+                        }}
                     )
                 return jsonify({"Message": "ProgressInfo Added!"}), 201
         else:

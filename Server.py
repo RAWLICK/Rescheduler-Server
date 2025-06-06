@@ -223,6 +223,21 @@ def update_ScheduleArray():
     except:
         return jsonify({"error": "An exception occurred in update_ScheduleArray route"}), 500
 
+@app.route('/GetScheduleArray', methods=['POST'])
+def get_ScheduleArray():
+    try:
+        data = request.json
+        if data:
+            scheduleData = StudentsSchedules.find_one({ "Phone Number": data["Phone Number"] }, {"_id": 0, "ScheduleArray": 1})
+            if scheduleData:
+                return jsonify(scheduleData["ScheduleArray"]), 201
+            else:
+                return jsonify({"error": "No schedule found!"}), 400
+        else:
+            return jsonify({"error": "No data found!"}), 400
+    except:
+        return jsonify({"error": "An exception occurred in get_ScheduleArray route"}), 500
+    
 @app.route('/UpdateExistingSubjectsArray', methods=['POST'])
 def update_ExistingSubjectsArray():
     try:
@@ -277,6 +292,21 @@ def update_ExistingSubjectsArray():
     except:
         return jsonify({"error": "An exception occurred in update_ExistingSubjectsArray route"}), 500
 
+@app.route('/GetExistingSubjectsArray', methods=['POST'])
+def get_ExistingSubjectsArray():
+    try:
+        data = request.json
+        if data:
+            existingSubjectsData = SchedulesCompletion.find_one({ "Phone Number": data["Phone Number"] }, {"_id": 0, "Completion": 1})
+            if existingSubjectsData:
+                return jsonify(existingSubjectsData["Completion"]), 201
+            else:
+                return jsonify({"error": "No existing subjects found!"}), 400
+        else:
+            return jsonify({"error": "No data found!"}), 400
+    except:
+        return jsonify({"error": "An exception occurred in get_ExistingSubjectsArray route"}), 500
+    
 @app.route('/Testing', methods=['POST'])
 def Testing():
     try:

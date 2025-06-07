@@ -209,16 +209,17 @@ def get_all_students():
             allStudents = []
             for student in StudentInfo.find({ "Distribution ID": data["Distribution ID"] }, {"_id": 0}):
                 required_fields = {
-                    "uniqueID": student.uniqueID,
-                    "Student_Name": student.Student_Name,
-                    "Phone_Number": student.Phone_Number,
-                    "Branch": student.Branch
+                    "uniqueID": student["uniqueID"],
+                    "Student_Name": student["Name"],
+                    "Phone_Number": student["Phone Number"],
+                    "Branch": student["Distribution Branch"]
                 }
                 allStudents.append(required_fields)
             return jsonify(allStudents), 201
         else:
             return jsonify({"error": "No data found!"}), 400
-    except:
+    except Exception as e:
+        print(f"Error: {e}")
         return jsonify({"error": "An exception occurred in get_all_students route"}), 500
     
 @app.route('/UpdateScheduleArray', methods=['POST'])

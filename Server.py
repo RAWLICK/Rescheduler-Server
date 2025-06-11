@@ -42,10 +42,13 @@ def compress():
             FixedSelections = data.get('FixedSelections')
             RemovingSelections = data.get('RemovingSelections')
             output = CompressionFunction(ImportedDataFrame, currentTime, PriorSelections, FixedSelections, RemovingSelections)
+            print(f"Output: {output}")
             return jsonify(output)
         else:
+            print("Come with a POST request rascal !!")
             return 'COME with a POST request rascal !!'
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in compress route")
         return jsonify({"error": "An exception occured in compress route"}), 500
     
 # Example: Insert data into MongoDB
@@ -92,9 +95,13 @@ def add_Distributor():
                 "Phone Number": data["Phone Number"],
                 "Completion": []
             })
+            print(f"Distributor added successfully: {data}")
             return jsonify({"message": "Data added successfully!"}), 201
-        return jsonify({"error": "No data found!"}), 400
-    except:
+        else:
+            print("No data found in addDistributor route")
+            return jsonify({"error": "No data found!"}), 400
+    except Exception as e:
+        print(f"Error: {e}. This is the error in addDistributor route")
         return jsonify({"error": "An exception occurred in addDistributor route"}), 500
 
 # Example: Fetch data from MongoDB
@@ -105,12 +112,16 @@ def getDistributorInfo():
         if uniqueID:
             DistributorExists = LibrariansInfo.find_one({ "uniqueID": uniqueID }, {"_id": 0})
             if DistributorExists:
+                print(f"Distributor found: {DistributorExists}")
                 return jsonify(DistributorExists), 201
             else:
+                print("Distributor didn't exist")
                 return jsonify("Distributor Didn't Exist"), 201
         else:
+            print("No data found in getDistributorInfo route")
             return jsonify({"error": "No data found!"}), 400
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in GetDistributorInfo route")
         return jsonify({"error": "An exception occurred in getDistributorInfo route"}), 500
 
 @app.route('/GetAllDistrubutionsInfo', methods=["GET"])
@@ -119,8 +130,10 @@ def getAllDistrubutionsInfo():
         allDistributors = []
         for distributor in LibrariansInfo.find({}, {"_id": 0, "Distribution Name": 1, "Local Address": 1, "City": 1}):
             allDistributors.append(distributor)
+        print(f"Returned All Distributors list")    
         return jsonify(allDistributors), 201
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in GetAllDistrubutionsInfo route")
         return jsonify({"error": "An exception occurred in getAllDistrubutionsInfo route"}), 500
 
 @app.route('/MatchNumber', methods=['POST'])
@@ -130,12 +143,16 @@ def match_number():
         if userPhoneNumber:
             userExists = StudentInfo.find_one({ "Phone Number": userPhoneNumber })
             if userExists:
+                print(f"User found: {userExists}")
                 return jsonify("true"), 201
             else:
+                print("User didn't exist")
                 return jsonify("false"), 201
         else:
+            print("No data found in match_number route")
             return jsonify({"error": "No data found!"}), 400
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in MatchNumber route")
         return jsonify({"error": "An exception occurred in match_number route"}), 500
     
 @app.route('/AddStudent', methods=['POST'])
@@ -156,9 +173,13 @@ def add_student():
                 "Phone Number": data["Phone Number"],
                 "Completion": []
             })
+            print(f"Student added successfully")
             return jsonify({"message": "Student added successfully!"}), 201
-        return jsonify({"error": "No data found!"}), 400
-    except:
+        else:
+            print("No data found in add_student route")
+            return jsonify({"error": "No data found!"}), 400
+    except Exception as e:
+        print(f"Error: {e}. This is the error in AddStudent route")
         return jsonify({"error": "An exception occurred in add_student route"}), 500
 
 @app.route('/GetStudentInfo', methods=['POST'])
@@ -171,12 +192,16 @@ def get_studentInfo():
             elif data["Type"] == "uniqueID":
                 studentData = StudentInfo.find_one({ "uniqueID": data["Value"] }, {"_id": 0})
             if studentData:
+                print(f"Student found: {studentData}")
                 return jsonify(studentData), 201
             else:
+                print("No student found")
                 return jsonify({"error": "No student found!"}), 400
         else:
+            print("No data found in get_studentInfo route")
             return jsonify({"error": "No data found!"}), 400
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in GetStudentInfo route")
         return jsonify({"error": "An exception occurred in get_studentInfo route"}), 500
 
 @app.route('/UpdateStudent', methods=['POST'])
@@ -189,16 +214,20 @@ def update_Student():
                 {
                     "$set": data["Updates"]
                 })
+                print(f"Student updated successfully with: {data['Value']}")
                 return jsonify({"Message": "Student Updated!"}), 201
             elif data["Type"] == "uniqueID":
                 StudentInfo.update_one({ "uniqueID": data["Value"] },
                 {
                     "$set": data["Updates"]
                 })
+                print(f"Student updated successfully with: {data['Value']}")
                 return jsonify({"Message": "Student Updated!"}), 201
         else:
+            print("No data found in update_Student route")
             return jsonify({"error": "No data found!"}), 400
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in UpdateStudent route")
         return jsonify({"error": "An exception occurred in update_Student route"}), 500
 
 @app.route('/GetAllStudents', methods=['POST'])
@@ -215,11 +244,13 @@ def get_all_students():
                     "Branch": student["Distribution Branch"]
                 }
                 allStudents.append(required_fields)
+            print(f"Returned All Students list for Distribution ID")
             return jsonify(allStudents), 201
         else:
+            print("No data found in get_all_students route")
             return jsonify({"error": "No data found!"}), 400
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error: {e}. This is the error in get_all_students route")
         return jsonify({"error": "An exception occurred in get_all_students route"}), 500
     
 @app.route('/UpdateScheduleArray', methods=['POST'])
@@ -232,16 +263,20 @@ def update_ScheduleArray():
                     { "uniqueID": data["uniqueID"] },
                     { "$push": { "ScheduleArray": data["SubjectInfoObject"] } }
                 )
+                print(f"SubjectInfoObject added successfully")
                 return jsonify({"Message": "SubjectInfoObject Added!"}), 201
             elif data["Process"] == "Delete":
                 StudentsSchedules.update_one(
                     { "uniqueID": data["uniqueID"] },
                     { "$pull": { "ScheduleArray": {"uniqueID": data["SubjectUniqueID"]} } }
                 )
+                print(f"SubjectInfoObject deleted successfully")
                 return jsonify({"Message": "SubjectInfoObject Deleted!"}), 201
         else:
+            print("No data found in update_ScheduleArray route")
             return jsonify({"error": "No data found!"}), 400
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in update_ScheduleArray route")
         return jsonify({"error": "An exception occurred in update_ScheduleArray route"}), 500
 
 @app.route('/GetScheduleArray', methods=['POST'])
@@ -251,12 +286,16 @@ def get_ScheduleArray():
         if data:
             scheduleData = StudentsSchedules.find_one({ "Phone Number": data["Phone Number"] }, {"_id": 0, "ScheduleArray": 1})
             if scheduleData:
+                print(f"Sended the ScheduleArray")
                 return jsonify(scheduleData["ScheduleArray"]), 201
             else:
+                print("No schedule found")
                 return jsonify({"error": "No schedule found!"}), 400
         else:
+            print("No data found")
             return jsonify({"error": "No data found!"}), 400
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in get_ScheduleArray route")
         return jsonify({"error": "An exception occurred in get_ScheduleArray route"}), 500
     
 @app.route('/UpdateExistingSubjectsArray', methods=['POST'])
@@ -269,6 +308,7 @@ def update_ExistingSubjectsArray():
                     { "uniqueID": data["uniqueID"] },
                     { "$push": { "Completion": data["StatsSubjectInfoObject"] } }
                 )
+                print(f"StatsSubjectInfoObject added successfully")
                 return jsonify({"Message": "StatsSubjectInfoObject Added!"}), 201
             elif data["Process"] == "Delete":
                 SchedulesCompletion.update_one(
@@ -287,6 +327,7 @@ def update_ExistingSubjectsArray():
                         "comp.uniqueID": data["NewExistingSubject"]["uniqueID"]
                     }]
                 )
+                print(f"StatsSubjectInfoObject updated successfully")
                 return jsonify({"Message": "StatsSubjectInfoObject Updated!"}), 201
             elif data["Process"] == "AddCompletion":
                 for i in data["PercentageArray"]:
@@ -307,10 +348,13 @@ def update_ExistingSubjectsArray():
                             "Streak": data["Streak"],
                         }}
                     )
+                print(f"ProgressInfo added successfully")
                 return jsonify({"Message": "ProgressInfo Added!"}), 201
         else:
+            print("No data found in update_ExistingSubjectsArray route")
             return jsonify({"error": "No data found!"}), 400
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in update_ExistingSubjectsArray route")
         return jsonify({"error": "An exception occurred in update_ExistingSubjectsArray route"}), 500
 
 @app.route('/GetExistingSubjectsArray', methods=['POST'])
@@ -320,12 +364,16 @@ def get_ExistingSubjectsArray():
         if data:
             existingSubjectsData = SchedulesCompletion.find_one({ "Phone Number": data["Phone Number"] }, {"_id": 0, "Completion": 1})
             if existingSubjectsData:
+                print(f"Sended the ExistingSubjectsArray")
                 return jsonify(existingSubjectsData["Completion"]), 201
             else:
+                print("No existing subjects found")
                 return jsonify({"error": "No existing subjects found!"}), 400
         else:
+            print("No data found in get_ExistingSubjectsArray route")
             return jsonify({"error": "No data found!"}), 400
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in get_ExistingSubjectsArray route")
         return jsonify({"error": "An exception occurred in get_ExistingSubjectsArray route"}), 500
     
 @app.route('/Testing', methods=['POST'])
@@ -333,10 +381,13 @@ def Testing():
     try:
         data = request.json
         if data:
+            print(f"Data received in Testing route: {data}")
             return jsonify({"Status": "Data Received!"}, {"Message": data}), 201
         else:
+            print("No data found in Testing route")
             return jsonify({"error": "No data found!"}), 400
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in Testing route")
         return jsonify({"error": "An exception occurred in Testing route"}), 500
     
 @app.route('/GetVersionInfo', methods=['GET'])
@@ -360,8 +411,10 @@ def get_version_info():
                 }
             }
         ]
+        print(f"Returned Version Info: {VersionInfo}")
         return jsonify(VersionInfo)
-    except:
+    except Exception as e:
+        print(f"Error: {e}. This is the error in GetVersionInfo route")
         return jsonify({"error": "An exception occurred in GetVersionInfo route"}), 500
     
 # @app.route('/SendingWhatsAppMessage', methods=['POST'])

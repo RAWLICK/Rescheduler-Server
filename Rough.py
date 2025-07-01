@@ -241,7 +241,7 @@ def CompressionFunction(
 
     Fragment_Dictionary = {}
 
-    # Work[boolean_list.index("True"): ] means selecting till last
+    # Work[(boolean_list.index("True") + 1): ] means selecting till last and we added +1 (when Fragment_Dictionary is including Prev_Work_List) so that the current time subject doesn't get included in both Prev_Work_List and boolean_list.index("True").
 
     if (PriorSelections == "" and FixedSelections == ""):
         Fragment_Dictionary.update({"Fragment_" + str(1) : list(Work[boolean_list.index("True"): ])})
@@ -250,7 +250,7 @@ def CompressionFunction(
         # Output: {'Fragment_1': ['Work 3', 'Work 3 Break', 'Work 4', 'Work 4 Break', 'Sona', 'Work 5', 'Work 5 Break', 'Work 6', 'Free 1', 'Free 2']}  
 
     elif (PriorSelections != "" and FixedSelections == ""):
-        Fragment_Dictionary.update({"Fragment_" + str(1) : Prev_Work_List + list(Work[boolean_list.index("True"): ])})
+        Fragment_Dictionary.update({"Fragment_" + str(1) : Prev_Work_List + list(Work[(boolean_list.index("True") + 1): ])})
         print(Fragment_Dictionary)
         print("\n")
         # Output: {'Fragment_1': ['Work 1', 'Work 2', 'Work 2 Break', 'Work 3', 'Work 3 Break', 'Work 4', 'Work 4 Break', 'Sona', 'Work 5', 'Work 5 Break', 'Work 6', 'Free 1', 'Free 2']}  
@@ -272,7 +272,7 @@ def CompressionFunction(
         # Output: {'Fragment_1': ['Work 3', 'Work 3 Break', 'Work 4', 'Work 4 Break'], 'Fragment_2': ['Sona', 'Work 5', 'Work 5 Break'], 'Fragment_3': ['Work 6', 'Free 1'], 'Fragment_4': ['Free 2']}
 
     elif (PriorSelections != "" and FixedSelections != ""):
-        Fragment_Dictionary.update({"Fragment_" + str(1) : Prev_Work_List + list(Work[boolean_list.index("True"): int(Pinned_Work[0])])})
+        Fragment_Dictionary.update({"Fragment_" + str(1) : Prev_Work_List + list(Work[(boolean_list.index("True") + 1): int(Pinned_Work[0])])})
 
         for i in range(0, len(Pinned_Work_List)-1):
             Fragment_Dictionary.update({"Fragment_" + str(i+2) : list(Work[int(Pinned_Work[i])+1 : int(Pinned_Work[i+1])])})

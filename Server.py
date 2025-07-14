@@ -155,6 +155,25 @@ def match_number():
         print(f"Error: {e}. This is the error in MatchNumber route")
         return jsonify({"error": "An exception occurred in match_number route"}), 500
     
+@app.route('/MatchEmail', methods=['POST'])
+def match_email():
+    try:
+        userEmail = request.json
+        if userEmail:
+            userExists = StudentInfo.find_one({ "Email ID": userEmail })
+            if userExists:
+                print(f"User found: {userExists}")
+                return jsonify("true"), 201
+            else:
+                print("User didn't exist")
+                return jsonify("false"), 201
+        else:
+            print("No data found in match_email route")
+            return jsonify({"error": "No data found!"}), 400
+    except Exception as e:
+        print(f"Error: {e}. This is the error in MatchEmail route")
+        return jsonify({"error": "An exception occurred in match_email route"}), 500
+
 @app.route('/AddStudent', methods=['POST'])
 def add_student():
     try:
@@ -165,12 +184,14 @@ def add_student():
                 "uniqueID": data["uniqueID"],
                 "Name": data["Name"],
                 "Phone Number": data["Phone Number"],
+                "Email ID": data["Email ID"],
                 "ScheduleArray": []
             })  # Insert into MongoDB
             SchedulesCompletion.insert_one({
                 "uniqueID": data["uniqueID"],
                 "Name": data["Name"],
                 "Phone Number": data["Phone Number"],
+                "Email ID": data["Email ID"],
                 "Completion": []
             })
             print(f"Student added successfully")
@@ -191,6 +212,8 @@ def get_studentInfo():
                 studentData = StudentInfo.find_one({ "Phone Number": data["Value"] }, {"_id": 0})
             elif data["Type"] == "uniqueID":
                 studentData = StudentInfo.find_one({ "uniqueID": data["Value"] }, {"_id": 0})
+            elif data["Type"] == "Email ID":
+                studentData = StudentInfo.find_one({ "Email ID": data["Value"] }, {"_id": 0})
             if studentData:
                 print(f"Student found: {studentData}")
                 return jsonify(studentData), 201
@@ -303,7 +326,10 @@ def get_ScheduleArray():
     try:
         data = request.json
         if data:
-            scheduleData = StudentsSchedules.find_one({ "Phone Number": data["Phone Number"] }, {"_id": 0, "ScheduleArray": 1})
+            if data["Type"] == "Phone Number":
+                scheduleData = StudentsSchedules.find_one({ "Phone Number": data["Value"] }, {"_id": 0, "ScheduleArray": 1})
+            elif data["Type"] == "Email ID":
+                scheduleData = StudentsSchedules.find_one({ "Email ID": data["Value"] }, {"_id": 0, "ScheduleArray": 1})
             if scheduleData:
                 print(f"Sended the ScheduleArray")
                 return jsonify(scheduleData["ScheduleArray"]), 201
@@ -381,7 +407,11 @@ def get_ExistingSubjectsArray():
     try:
         data = request.json
         if data:
-            existingSubjectsData = SchedulesCompletion.find_one({ "Phone Number": data["Phone Number"] }, {"_id": 0, "Completion": 1})
+            if data["Type"] == "Phone Number":
+                existingSubjectsData = SchedulesCompletion.find_one({ "Phone Number": data["Value"] }, {"_id": 0, "Completion": 1})
+            elif data["Type"] == "Email ID":
+                existingSubjectsData = SchedulesCompletion.find_one({ "Email ID": data["Value"] }, {"_id": 0, "Completion": 1})
+                
             if existingSubjectsData:
                 print(f"Sended the ExistingSubjectsArray")
                 return jsonify(existingSubjectsData["Completion"]), 201

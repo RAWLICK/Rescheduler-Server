@@ -221,14 +221,17 @@ def CompressionFunction(
 
     # Ensures that the Time_Duration on which the cur_time falls get automatically chosen and get compressed in the upcoming to-be made schedule.
     # This below boolean list is a list of lot of "FALSE" but one "TRUE" which is used to know about that Time_Duration which is falling at present
+    # SubjectOnCurrentTime has to be 1 if the current time is falling in between any of the works, else it has to be 0. This is because of the issue of CurrentTime getting added in both Prev_Work_List and boolean_list.index("True") List.
 
     boolean_list = []
+    SubjectOnCurrentTime = 1
     for i in range (0, len(Start)):
         if (cur_time >= Start[i] and cur_time < End[i]):
             boolean_list.append("True")
         else: 
             boolean_list.append("False")
     if("True" not in boolean_list):
+        SubjectOnCurrentTime = 0
         boolean_list = []
         for i in range (0, len(Start)):
             if (Start[i] > cur_time and "True" not in boolean_list):
@@ -250,7 +253,7 @@ def CompressionFunction(
         # Output: {'Fragment_1': ['Work 3', 'Work 3 Break', 'Work 4', 'Work 4 Break', 'Sona', 'Work 5', 'Work 5 Break', 'Work 6', 'Free 1', 'Free 2']}  
 
     elif (PriorSelections != "" and FixedSelections == ""):
-        Fragment_Dictionary.update({"Fragment_" + str(1) : Prev_Work_List + list(Work[(boolean_list.index("True") + 1): ])})
+        Fragment_Dictionary.update({"Fragment_" + str(1) : Prev_Work_List + list(Work[(boolean_list.index("True") + SubjectOnCurrentTime): ])})
         print(Fragment_Dictionary)
         print("\n")
         # Output: {'Fragment_1': ['Work 1', 'Work 2', 'Work 2 Break', 'Work 3', 'Work 3 Break', 'Work 4', 'Work 4 Break', 'Sona', 'Work 5', 'Work 5 Break', 'Work 6', 'Free 1', 'Free 2']}  
@@ -272,7 +275,7 @@ def CompressionFunction(
         # Output: {'Fragment_1': ['Work 3', 'Work 3 Break', 'Work 4', 'Work 4 Break'], 'Fragment_2': ['Sona', 'Work 5', 'Work 5 Break'], 'Fragment_3': ['Work 6', 'Free 1'], 'Fragment_4': ['Free 2']}
 
     elif (PriorSelections != "" and FixedSelections != ""):
-        Fragment_Dictionary.update({"Fragment_" + str(1) : Prev_Work_List + list(Work[(boolean_list.index("True") + 1): int(Pinned_Work[0])])})
+        Fragment_Dictionary.update({"Fragment_" + str(1) : Prev_Work_List + list(Work[(boolean_list.index("True") + SubjectOnCurrentTime): int(Pinned_Work[0])])})
 
         for i in range(0, len(Pinned_Work_List)-1):
             Fragment_Dictionary.update({"Fragment_" + str(i+2) : list(Work[int(Pinned_Work[i])+1 : int(Pinned_Work[i+1])])})

@@ -454,8 +454,8 @@ def get_version_info():
             {
                 "Platform": "ios",
                 "Versions": {
-                    "LatestVersion": "1.3",
-                    "MinSupportedVersion": "1.3",
+                    "LatestVersion": "1.4",
+                    "MinSupportedVersion": "1.4",
                     "UpdateRequired": "true"
                 }
             }

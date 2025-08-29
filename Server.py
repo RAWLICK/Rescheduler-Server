@@ -446,16 +446,16 @@ def get_version_info():
             {
                 "Platform": "android",
                 "Versions": {
-                    "LatestVersion": "1.6",
-                    "MinSupportedVersion": "1.6",
+                    "LatestVersion": "1.6.1",
+                    "MinSupportedVersion": "1.6.1",
                     "UpdateRequired": "true"
                 }
             },
             {
                 "Platform": "ios",
                 "Versions": {
-                    "LatestVersion": "1.4",
-                    "MinSupportedVersion": "1.4",
+                    "LatestVersion": "1.5",
+                    "MinSupportedVersion": "1.5",
                     "UpdateRequired": "true"
                 }
             }

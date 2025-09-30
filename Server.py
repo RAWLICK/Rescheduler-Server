@@ -128,7 +128,7 @@ def getDistributorInfo():
 def getAllDistrubutionsInfo():
     try:
         allDistributors = []
-        for distributor in LibrariansInfo.find({}, {"_id": 0, "Distribution Name": 1, "Local Address": 1, "City": 1}):
+        for distributor in LibrariansInfo.find({}, {"_id": 0, "Distribution Name": 1, "Local Address": 1, "City": 1, "Other Branches List": 1}):
             allDistributors.append(distributor)
         print(f"Returned All Distributors list")    
         return jsonify(allDistributors), 201

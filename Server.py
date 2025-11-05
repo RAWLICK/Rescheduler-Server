@@ -130,6 +130,14 @@ def getAllDistrubutionsInfo():
         allDistributors = []
         for distributor in LibrariansInfo.find({}, {"_id": 0, "Distribution Name": 1, "Local Address": 1, "City": 1, "Other Branches List": 1}):
             allDistributors.append(distributor)
+            if len(distributor["Other Branches List"]) > 0:
+                for branch in distributor["Other Branches List"]:
+                    branchInfo = {
+                        "Distribution Name": distributor["Distribution Name"],
+                        "Local Address": branch["LocalAddress"],
+                        "City": branch["City"]
+                    }
+                    allDistributors.append(branchInfo)
         print(f"Returned All Distributors list")    
         return jsonify(allDistributors), 201
     except Exception as e:

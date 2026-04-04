@@ -4,6 +4,11 @@ from Rough import CompressionFunction
 from flask_cors import CORS
 from pymongo import MongoClient
 import os
+import requests
+from flask import Blueprint, request, jsonify
+import razorpay
+import time
+
 # from twilio.rest import Client
 # from dotenv import load_dotenv
 
@@ -28,6 +33,38 @@ LibrariansInfo = db['Librarians Info']  # Collection name
 SchedulesCompletion = db['Schedules Completion']  # Collection name
 StudentInfo = db['Students Info']
 StudentsSchedules = db['Students Schedules']
+razorpay_client = razorpay.Client(auth=(
+    os.getenv("rzp_live_SZCZ2pEWmp8WuL"),
+    os.getenv("p8fMiANo1TIVqtW7B5gpaLMB")
+))
+
+def detect_country(request):
+    try:
+        # 1. Get IP
+        ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+
+        if ip and "," in ip:
+            ip = ip.split(",")[0]
+
+        # Localhost fallback
+        if ip in ["127.0.0.1", "::1"]:
+            return "IN"
+
+        # 2. Call IP API
+        res = requests.get(f"https://ipapi.co/{ip}/json/")
+        data = res.json()
+
+        ip_country = data.get("country")
+
+        # 3. Device fallback
+        device_country = request.headers.get("x-device-country")
+
+        # 4. Final decision
+        return ip_country or device_country or "IN"
+
+    except Exception as e:
+        print("Country detection error:", e)
+        return request.headers.get("x-device-country", "IN")
 
 # In the backend API case, ensure to have a 3rd device to share the same network in both PC and real device emulator and also ensure that Windows Firewall is closed.
 
@@ -473,6 +510,81 @@ def get_version_info():
     except Exception as e:
         print(f"Error: {e}. This is the error in GetVersionInfo route")
         return jsonify({"error": "An exception occurred in GetVersionInfo route"}), 500
+    
+@app.route("/getPricing", methods=["GET"])
+def get_pricing():
+    country = detect_country(request)
+
+    if country == "IN":
+        pricing = {"amount": 19, "currency": "INR"}
+
+    elif country == "PK":  # Pakistan
+        pricing = {"amount": 0.2, "currency": "USD"}  
+
+    elif country == "ID":  # Indonesia
+        pricing = {"amount": 0.2, "currency": "USD"}   
+
+    elif country == "BD":  # Bangladesh
+        pricing = {"amount": 0.2, "currency": "USD"}   
+
+    elif country == "NP":  # Nepal
+        pricing = {"amount": 0.2, "currency": "USD"}   
+
+    elif country == "LK":  # Sri Lanka
+        pricing = {"amount": 0.2, "currency": "USD"}   
+
+    elif country == "MM":  # Myanmar
+        pricing = {"amount": 0.2, "currency": "USD"}   
+
+    else:
+        pricing = {"amount": 0.99, "currency": "USD"}
+
+    return jsonify({
+        "country": country,
+        "pricing": pricing
+    })
+
+@app.route("/createOrder", methods=["POST"])
+def create_order():
+    data = request.json
+    user_id = data.get("uniqueID")
+    country = detect_country(data.get("request"))  # Pass the request object to detect_country function
+
+    # Razorpay expects amount in the smallest currency unit (e.g., paise for INR, cents for USD)
+    if country == "IN":
+        amount = 19 * 100
+        currency = "INR"
+
+    elif country in ["PK", "ID", "BD", "NP", "LK", "MM"]:
+        amount = 0.2 * 100
+        currency = "USD"
+    else:
+        amount = 99
+        currency = "USD"
+
+    order = razorpay_client.order.create({
+        "amount": amount,
+        "currency": currency,
+        "receipt": f"user_{user_id}_{int(time.time())}"
+    })
+
+    return jsonify(order)
+
+@app.route("/verifyPayment", methods=["POST"])
+def verify_payment():
+    data = request.json
+
+    try:
+        razorpay_client.utility.verify_payment_signature({
+            "razorpay_order_id": data["order_id"],
+            "razorpay_payment_id": data["payment_id"],
+            "razorpay_signature": data["signature"]
+        })
+
+        return jsonify({"status": "success"})
+
+    except:
+        return jsonify({"status": "failed"}), 400
     
 # @app.route('/SendingWhatsAppMessage', methods=['POST'])
 # def SendingWhatsAppMessage():

@@ -4,8 +4,6 @@ from Rough import CompressionFunction
 from flask_cors import CORS
 from pymongo import MongoClient
 import os
-import requests
-from flask import Blueprint, request, jsonify
 import razorpay
 import time
 

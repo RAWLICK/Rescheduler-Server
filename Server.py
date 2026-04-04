@@ -3,6 +3,7 @@ from Rough import CompressionFunction
 # from Rough import CompressionFunction
 from flask_cors import CORS
 from pymongo import MongoClient
+import requests
 import os
 import razorpay
 import time
@@ -546,7 +547,7 @@ def get_pricing():
 def create_order():
     data = request.json
     user_id = data.get("uniqueID")
-    country = detect_country(data.get("request"))  # Pass the request object to detect_country function
+    country = detect_country(request)  # Pass the request object to detect_country function
 
     # Razorpay expects amount in the smallest currency unit (e.g., paise for INR, cents for USD)
     if country == "IN":

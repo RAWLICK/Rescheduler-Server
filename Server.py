@@ -589,7 +589,10 @@ def verify_payment():
         })
 
         # 🔁 2. Prevent duplicate processing
-        existing_payment = StudentInfo.Payments.find_one({"payment_id": payment_id})
+        existing_payment = StudentInfo.find_one({
+            "uniqueID": uniqueID,
+            "Payments.payment_id": payment_id
+        })
         if existing_payment:
             return jsonify({
                 "success": True,
@@ -613,13 +616,18 @@ def verify_payment():
         )
 
         # 🧾 5. Store payment history (VERY IMPORTANT)
-        StudentInfo.Payments.insert_one({
-            "user_id": uniqueID,
-            "payment_id": payment_id,
-            "order_id": order_id,
-            "signature": signature,
-            "created_at": subscribed_at
-        })
+        StudentInfo.update_one(
+            {"uniqueID": uniqueID},
+            {
+                "$push": {
+                    "Payments": {
+                        "payment_id": payment_id,
+                        "order_id": order_id,
+                        "created_at": datetime.utcnow()
+                    }
+                }
+            }
+        )
 
         # ✅ 6. Return useful response
         return jsonify({

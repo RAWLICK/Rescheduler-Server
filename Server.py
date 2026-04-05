@@ -33,8 +33,8 @@ SchedulesCompletion = db['Schedules Completion']  # Collection name
 StudentInfo = db['Students Info']
 StudentsSchedules = db['Students Schedules']
 razorpay_client = razorpay.Client(auth=(
-    os.getenv("rzp_live_SZCZ2pEWmp8WuL"),
-    os.getenv("p8fMiANo1TIVqtW7B5gpaLMB")
+    os.getenv("RAZORPAY_KEY_ID"),
+    os.getenv("RAZORPAY_KEY_SECRET")
 ))
 
 def detect_country(request):

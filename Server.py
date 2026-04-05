@@ -1,3 +1,5 @@
+import datetime
+import traceback
 from flask import Flask, request, jsonify
 from Rough import CompressionFunction
 # from Rough import CompressionFunction
@@ -574,16 +576,66 @@ def verify_payment():
     data = request.json
 
     try:
+        order_id = data.get("order_id")
+        payment_id = data.get("payment_id")
+        signature = data.get("signature")
+        uniqueID = data.get("uniqueID")  # your user identifier
+
+        # 🔐 1. Verify signature (Razorpay)
         razorpay_client.utility.verify_payment_signature({
-            "razorpay_order_id": data["order_id"],
-            "razorpay_payment_id": data["payment_id"],
-            "razorpay_signature": data["signature"]
+            "razorpay_order_id": order_id,
+            "razorpay_payment_id": payment_id,
+            "razorpay_signature": signature
         })
 
-        return jsonify({"status": "success"})
+        # 🔁 2. Prevent duplicate processing
+        existing_payment = StudentInfo.Payments.find_one({"payment_id": payment_id})
+        if existing_payment:
+            return jsonify({
+                "success": True,
+                "message": "Payment already processed"
+            })
+        
+        # 📅 3. Create subscription dates
+        subscribed_at = datetime.utcnow()
+        expiry_date = subscribed_at + datetime.timedelta(days=365)  # change as needed
 
-    except:
-        return jsonify({"status": "failed"}), 400
+        # 🔥 4. Update user subscription
+        StudentInfo.update_one(
+            {"uniqueID": uniqueID},
+            {
+                "$set": {
+                    "Subscription Type": "Premium",
+                    "Start Date": subscribed_at,
+                    "Expiry Date": expiry_date
+                }
+            }
+        )
+
+        # 🧾 5. Store payment history (VERY IMPORTANT)
+        StudentInfo.Payments.insert_one({
+            "user_id": uniqueID,
+            "payment_id": payment_id,
+            "order_id": order_id,
+            "signature": signature,
+            "created_at": subscribed_at
+        })
+
+        # ✅ 6. Return useful response
+        return jsonify({
+            "success": True,
+            "subscribed_at": subscribed_at.isoformat(),
+            "expiry_date": expiry_date.isoformat()
+        })
+
+    except Exception as e:
+        print("VERIFY ERROR:", e)
+        traceback.print_exc()
+
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 400
     
 # @app.route('/SendingWhatsAppMessage', methods=['POST'])
 # def SendingWhatsAppMessage():

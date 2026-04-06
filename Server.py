@@ -553,7 +553,7 @@ def create_order():
 
     # Razorpay expects amount in the smallest currency unit (e.g., paise for INR, cents for USD)
     if country == "IN":
-        amount = 19 * 100
+        amount = 1 * 100
         currency = "INR"
 
     elif country in ["PK", "ID", "BD", "NP", "LK", "MM"]:

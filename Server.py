@@ -606,7 +606,10 @@ def verify_payment():
             })
         
         # 📅 3. Create subscription dates
-        subscribed_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        subscribed_at = datetime.now(timezone.utc)
+        # Convert to ISO string
+        subscribed_at_str = subscribed_at.isoformat().replace("+00:00", "Z")
+
         expiry_date = subscribed_at + timedelta(days=365)  # change as 
         # Convert to ISO string
         expiry_date_str = expiry_date.isoformat().replace("+00:00", "Z")
@@ -617,7 +620,7 @@ def verify_payment():
             {
                 "$set": {
                     "Subscription Type": "Premium",
-                    "Start Date": subscribed_at,
+                    "Start Date": subscribed_at_str,
                     "Expiry Date": expiry_date_str
                 }
             }

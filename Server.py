@@ -566,7 +566,7 @@ def create_order():
     order = razorpay_client.order.create({
         "amount": amount,
         "currency": currency,
-        "receipt": f"user_{user_id}_{int(time.time())}"
+        "order_id": f"user_{user_id}_{int(time.time())}"
     })
 
     return jsonify(order)

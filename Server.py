@@ -566,10 +566,14 @@ def create_order():
     order = razorpay_client.order.create({
         "amount": amount,
         "currency": currency,
-        "order_id": f"user_{user_id}_{int(time.time())}"
+        "receipt": f"user_{user_id}_{int(time.time())}"
     })
 
-    return jsonify(order)
+    return jsonify({
+        "orderId": order["id"],
+        "amount": order["amount"],
+        "currency": order["currency"]
+    })
 
 @app.route("/verifyPayment", methods=["POST"])
 def verify_payment():

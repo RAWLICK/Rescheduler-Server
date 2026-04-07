@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta, timezone
 import traceback
 from flask import Flask, request, jsonify
 from Rough import CompressionFunction
@@ -606,8 +606,8 @@ def verify_payment():
             })
         
         # 📅 3. Create subscription dates
-        subscribed_at = datetime.utcnow()
-        expiry_date = subscribed_at + datetime.timedelta(days=365)  # change as needed
+        subscribed_at = datetime.now(timezone.utc)
+        expiry_date = subscribed_at + timedelta(days=365)  # change as needed
 
         # 🔥 4. Update user subscription
         StudentInfo.update_one(

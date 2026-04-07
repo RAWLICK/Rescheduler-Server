@@ -581,6 +581,8 @@ def verify_payment():
         signature = data.get("signature")
         uniqueID = data.get("uniqueID")  # your user identifier
 
+        print(f"Verifying payment for order_id: {order_id}, payment_id: {payment_id}, uniqueID: {uniqueID}")
+
         # 🔐 1. Verify signature (Razorpay)
         razorpay_client.utility.verify_payment_signature({
             "razorpay_order_id": order_id,

@@ -606,8 +606,10 @@ def verify_payment():
             })
         
         # 📅 3. Create subscription dates
-        subscribed_at = datetime.now(timezone.utc)
-        expiry_date = subscribed_at + timedelta(days=365)  # change as needed
+        subscribed_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        expiry_date = subscribed_at + timedelta(days=365)  # change as 
+        # Convert to ISO string
+        expiry_date_str = expiry_date.isoformat().replace("+00:00", "Z")
 
         # 🔥 4. Update user subscription
         StudentInfo.update_one(
@@ -616,7 +618,7 @@ def verify_payment():
                 "$set": {
                     "Subscription Type": "Premium",
                     "Start Date": subscribed_at,
-                    "Expiry Date": expiry_date
+                    "Expiry Date": expiry_date_str
                 }
             }
         )
@@ -629,7 +631,7 @@ def verify_payment():
                     "Payments": {
                         "payment_id": payment_id,
                         "order_id": order_id,
-                        "created_at": datetime.utcnow()
+                        "created_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
                     }
                 }
             }

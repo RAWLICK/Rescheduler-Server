@@ -249,6 +249,47 @@ def add_student():
         print(f"Error: {e}. This is the error in AddStudent route")
         return jsonify({"error": "An exception occurred in add_student route"}), 500
 
+@app.route('/IsSubscriptionActive', methods=['POST'])
+def is_subscription_active():
+    try:
+        data = request.json
+        if data:
+            studentData = StudentInfo.find_one({ "uniqueID": data["uniqueID"] }, {"_id": 0, "Subscription Type": 1, "Expiry Date": 1})
+            if studentData: 
+                subscription_type = studentData.get("Subscription Type")
+                expiry_date_str = studentData.get("Expiry Date")
+
+                if subscription_type == "Premium" and expiry_date_str:
+                    expiry_date = datetime.fromisoformat(expiry_date_str.replace("Z", "+00:00"))
+                    current_time = datetime.now(timezone.utc)
+
+                    if current_time < expiry_date:
+                        print(f"Subscription is active for uniqueID: {data['uniqueID']}")
+                        return jsonify({"active": True}), 201
+                    else:
+                        print(f"Subscription has expired for uniqueID: {data['uniqueID']}")
+                        StudentInfo.update_one(
+                            {"uniqueID": data["uniqueID"]},
+                            {
+                                "$set": {
+                                    "Subscription Type": "Expired"
+                                }
+                            }
+                        )
+                        return jsonify({"active": False}), 201
+                else:
+                    print(f"Subscription is not premium for uniqueID: {data['uniqueID']}")
+                    return jsonify({"active": False}), 201
+            else:
+                print("No student found")
+                return jsonify({"error": "No student found!"}), 400
+        else:
+            print("No data found in is_subscription_active route")
+            return jsonify({"error": "No data found!"}), 400
+    except Exception as e:
+        print(f"Error: {e}. This is the error in is_subscription_active route")
+        return jsonify({"error": "An exception occurred in is_subscription_active route"}), 500
+    
 @app.route('/GetStudentInfo', methods=['POST'])
 def get_studentInfo():
     try:

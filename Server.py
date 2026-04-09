@@ -188,7 +188,7 @@ def getAllDistrubutionsInfo():
         return jsonify({"error": "An exception occurred in getAllDistrubutionsInfo route"}), 500
 
 @app.route('/DetectCountry', methods=['GET'])
-def detect_country():
+def detect_country_name():
     try:
         country_code = detect_country(request)
         if country_code:

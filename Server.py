@@ -9,6 +9,7 @@ import requests
 import os
 import razorpay
 import time
+import pycountry
 
 # from twilio.rest import Client
 # from dotenv import load_dotenv
@@ -38,6 +39,10 @@ razorpay_client = razorpay.Client(auth=(
     os.getenv("RAZORPAY_KEY_ID"),
     os.getenv("RAZORPAY_KEY_SECRET")
 ))
+
+def get_country_name(code):
+    country = pycountry.countries.get(alpha_2=code)
+    return country.name if country else code
 
 def detect_country(request):
     try:
@@ -181,6 +186,19 @@ def getAllDistrubutionsInfo():
     except Exception as e:
         print(f"Error: {e}. This is the error in GetAllDistrubutionsInfo route")
         return jsonify({"error": "An exception occurred in getAllDistrubutionsInfo route"}), 500
+
+@app.route('/DetectCountry', methods=['GET'])
+def detect_country():
+    try:
+        country_code = detect_country(request)
+        if country_code:
+            country_name = get_country_name(country_code)
+            return jsonify({"country_name": country_name}), 201
+        else:
+            return jsonify({"error": "No country code provided"}), 400
+    except Exception as e:
+        print(f"Error: {e}. This is the error in DetectCountry route")
+        return jsonify({"error": "An exception occurred in DetectCountry route"}), 500
 
 @app.route('/MatchNumber', methods=['POST'])
 def match_number():

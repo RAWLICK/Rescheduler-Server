@@ -551,8 +551,8 @@ def get_version_info():
             {
                 "Platform": "android",
                 "Versions": {
-                    "LatestVersion": "1.7.2",
-                    "MinSupportedVersion":"1.7.2",
+                    "LatestVersion": "1.7.3",
+                    "MinSupportedVersion":"1.7.3",
                     "UpdateRequired": "true"
                 }
             },

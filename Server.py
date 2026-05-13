@@ -29,7 +29,8 @@ CORS(app)
 # TwilioClient = Client(account_sid, auth_token) 
 
 # MongoDB configuration
-client = MongoClient("mongodb+srv://archit_gupta_0019:My_Lord%3B7@rescheduler.kmyql.mongodb.net/")
+# client = MongoClient("mongodb+srv://archit_gupta_0019:My_Lord%3B7@rescheduler.kmyql.mongodb.net/")
+client = MongoClient("mongodb+srv://archit_gupta_0019:My_Lord%3B7@reschedulerfreecluster.1viezye.mongodb.net/?appName=ReschedulerFreeCluster")
 db = client['Users-Information']  # Database name
 LibrariansInfo = db['Librarians Info']  # Collection name
 SchedulesCompletion = db['Schedules Completion']  # Collection name
